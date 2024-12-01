@@ -37,6 +37,7 @@ class Morpion(QWidget):
 
         # Création de la grille de jeu
         self.grid = [[None for _ in range(3)] for _ in range(3)]
+
         self.current_player = "X"
 
         for i in range(3):
@@ -173,24 +174,32 @@ class Morpion(QWidget):
     def check_winner(self):
         return self.check_winner_board(self.get_board())
 
+    def is_draw(self):
+        board = self.get_board()
+        return self.is_draw_board(board) and not self.check_winner_board(board)
+
+
+    def is_draw_board(self, board):
+        """Retourne True si toutes les cases de la grille sont remplies."""
+        return all(cell != "" for row in board for cell in row)
+
     def check_winner_board(self, board):
-        # Vérifie les lignes, colonnes et diagonales
-        for i in range(3):
-            if board[i][0] == board[i][1] == board[i][2] != "":
+        """Retourne True si un gagnant est détecté sur la grille."""
+        # Vérifie les lignes
+        for row in board:
+            if row[0] == row[1] == row[2] and row[0] != "":
                 return True
-            if board[0][i] == board[1][i] == board[2][i] != "":
+        # Vérifie les colonnes
+        for col in range(3):
+            if board[0][col] == board[1][col] == board[2][col] and board[0][col] != "":
                 return True
-        if board[0][0] == board[1][1] == board[2][2] != "":
+        # Vérifie les diagonales
+        if board[0][0] == board[1][1] == board[2][2] and board[0][0] != "":
             return True
-        if board[0][2] == board[1][1] == board[2][0] != "":
+        if board[0][2] == board[1][1] == board[2][0] and board[0][2] != "":
             return True
         return False
 
-    def is_draw(self):
-        return self.is_draw_board(self.get_board())
-
-    def is_draw_board(self, board):
-        return all(cell != "" for row in board for cell in row)
 
     def reset_game(self):
         # Réinitialise le jeu
